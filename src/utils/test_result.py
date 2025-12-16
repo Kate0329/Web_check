@@ -9,7 +9,10 @@ TEST_OPTIONS = {
     "語系編碼檢測 (lang)": "lang",
     "加密連結檢測 (https)": "https",
     "響應式設計檢測 (RWD)": "RWD",
-    "網站圖示檢測 (Favicon)": "favicon"
+    "網站圖示檢測 (Favicon)": "favicon",
+    "流量統計檢測 (WebAnalysis)": "WebAnalysis",
+    "網頁動畫 (Animation)": "Animation",
+    "無障礙檢測 (accessibility)": "accessibility"
 }
 
 def parse_w3c_response(response):
@@ -119,6 +122,63 @@ def parse_rwd_response(response):
                 
     return False, False
 
+def parse_favicon_response(response):
+    """解析 Favicon 測試結果"""
+    main_data = response
+    if isinstance(response, list) and len(response) > 0:
+        main_data = response[0]
+    
+    if isinstance(main_data, dict):
+        # 檢查是否有 favicon 欄位且不為空
+        if "favicon" in main_data and main_data["favicon"]:
+            return True, True, main_data["favicon"]
+            
+    return False, False, None
+
+def parse_web_analysis_response(response):
+    """解析流量統計檢測結果"""
+    main_data = response
+    if isinstance(response, list) and len(response) > 0:
+        main_data = response[0]
+    
+    if isinstance(main_data, dict):
+        if "hasAnalytics" in main_data:
+            passed = main_data["hasAnalytics"]
+            tools = []
+            if "detectedTools" in main_data and isinstance(main_data["detectedTools"], dict):
+                for tool_name, is_detected in main_data["detectedTools"].items():
+                    if is_detected:
+                        tools.append(tool_name)
+            return True, passed, tools
+            
+    return False, False, []
+
+def parse_accessibility_response(response):
+    """解析無障礙檢測結果"""
+    main_data = response
+    if isinstance(response, list) and len(response) > 0:
+        main_data = response[0]
+    
+    if isinstance(main_data, dict):
+        if "hasAccessibility" in main_data:
+            return True, main_data["hasAccessibility"]
+            
+    return False, False
+
+def parse_animation_response(response):
+    """解析網頁動畫檢測結果"""
+    main_data = response
+    if isinstance(response, list) and len(response) > 0:
+        main_data = response[0]
+    
+    if isinstance(main_data, dict):
+        if "hasFlashAnimation" in main_data:
+            # hasFlashAnimation=True 代表有動畫 -> 未通過
+            # hasFlashAnimation=False 代表無動畫 -> 通過
+            return True, not main_data["hasFlashAnimation"]
+            
+    return False, False
+
 def display_test_result(endpoint, response):
     """根據 Endpoint 顯示不同的測試結果"""
     
@@ -207,8 +267,39 @@ def display_test_result(endpoint, response):
         
     # 7. 網站圖示檢測 (Favicon)
     if endpoint == "favicon":
-        is_parsed, passed = parse_simple_response(response, "favicon")
+        is_parsed, passed, favicon_url = parse_favicon_response(response)
 
+        if is_parsed:
+            if passed:
+                st.success("測試結果 : 通過")
+                st.markdown(f"**favicon :** {favicon_url}")
+            else:
+                st.error("測試結果 : 未通過")
+            
+            with st.expander("查看詳細 JSON 結果", expanded=False):
+                st.json(response)
+            return
+    
+    # 8. 流量統計(WebAnalysis)
+    if endpoint == "WebAnalysis":
+        is_parsed, passed, tools = parse_web_analysis_response(response)
+        
+        if is_parsed:
+            if passed:
+                st.success("測試結果 : 通過")
+                tools_str = "、".join(tools) if tools else "無"
+                st.markdown(f"**流量統計工具 :** {tools_str}")
+            else:
+                st.error("測試結果 : 未通過")
+            
+            with st.expander("查看詳細 JSON 結果", expanded=False):
+                st.json(response)
+            return
+
+    # 9. 網頁動畫 (Animation)
+    if endpoint == "Animation":
+        is_parsed, passed = parse_animation_response(response)
+        
         if is_parsed:
             if passed:
                 st.success("測試結果 : 通過")
@@ -219,7 +310,21 @@ def display_test_result(endpoint, response):
                 st.json(response)
             return
 
-    # 8. 其他測試 (預設顯示方式)
+    # 10. 無障礙檢測 (accessibility)
+    if endpoint == "accessibility":
+        is_parsed, passed = parse_accessibility_response(response)
+        
+        if is_parsed:
+            if passed:
+                st.success("測試結果 : 通過")
+            else:
+                st.error("測試結果 : 未通過")
+            
+            with st.expander("查看詳細 JSON 結果", expanded=False):
+                st.json(response)
+            return
+
+    # 11. 其他測試 (預設顯示方式)
     if isinstance(response, list):
         st.success("請求成功! (收到列表資料)")
         with st.expander("查看詳細 JSON 結果", expanded=True):

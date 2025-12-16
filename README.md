@@ -58,24 +58,32 @@
 若要新增新的檢測功能，請依照以下步驟進行：
 
 1.  **定義測試選項 (`src/utils/test_result.py`)**
-    在 `TEST_OPTIONS` 字典中加入新的測試項目名稱與對應的 Endpoint 代碼。
+    在 `TEST_OPTIONS` 字典中加入新的測試項目名稱與對應的 Endpoint 代碼 (Key)。
     ```python
     TEST_OPTIONS = {
         # ...
-        "新測試項目名稱": "newTestEndpoint"
+        "新測試項目名稱 (NewTest)": "newTestEndpoint"
     }
     ```
 
 2.  **實作結果解析與顯示 (`src/utils/test_result.py`)**
     *   若回傳格式特殊，請新增解析函式 (例如 `parse_new_test_response`)。
-    *   在 `display_test_result` 函式中加入對應的 `if endpoint == "newTestEndpoint":` 判斷區塊，定義如何顯示成功/失敗訊息及詳細數據。
+    *   在 `display_test_result` 函式中加入對應的 `if endpoint == "newTestEndpoint":` 判斷區塊。
+    *   定義如何顯示成功/失敗訊息 (使用 `st.success`, `st.error`) 及詳細數據。
 
-3.  **加入選單勾選 (`src/app_pages/test_selection.py`)**
+3.  **加入選單勾選 (`src/app_pages/selection.py`)**
     在 `show()` 函式中新增 `st.checkbox`，讓使用者可以勾選此項目。
     ```python
-    if st.checkbox("新測試項目名稱", ...):
-        current_selection.append("新測試項目名稱")
+    # 範例
+    is_checked = "新測試項目名稱 (NewTest)" in st.session_state["selected_tests"]
+    if st.checkbox("新測試項目名稱 (NewTest)", value=is_checked):
+        current_selection.append("新測試項目名稱 (NewTest)")
     ```
 
-4.  **設定 API 呼叫方式 (`src/app_pages/url_setting.py`)**
-    *   若新項目是呼叫獨立的 n8n Endpoint，則無需額外設定。
+4.  **API 呼叫設定**
+    *   **`src/app_pages/url_setting.py`**: 程式會自動根據 `TEST_OPTIONS` 的 Endpoint 呼叫 API，通常**無需修改**此檔案。
+    *   **`src/services/api_client.py` (選用)**: 建議在此檔案中新增對應的 `check_...` 方法，以保持程式碼結構完整。
+        ```python
+        def check_new_test(self, link: str) -> Dict[str, Any]:
+            return self.call_endpoint("newTestEndpoint", {"link": link})
+        ```

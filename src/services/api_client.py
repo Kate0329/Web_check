@@ -68,3 +68,15 @@ class N8nApiClient:
     # 網站圖示檢測
     def check_favicon(self, link: str) -> Dict[str, Any]:
         return self.call_endpoint("favicon", {"link": link})
+
+    # 流量統計檢測
+    def check_web_analysis(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("WebAnalysis", {"link": link})
+
+    # 網頁動畫檢測
+    def check_Animation(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("Animation", {"link": link})
+
+    # 無障礙檢測
+    def check_accessibility(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("accessibility", {"link": link})
