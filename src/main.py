@@ -18,7 +18,7 @@ st.markdown("""
         margin-bottom: 8px;
         border: 1px solid transparent;
         background-color: transparent;
-        color: #4a4a4a;
+        color: #ffffff;
         font-weight: 500;
         padding: 10px 15px;
         transition: all 0.2s ease;
@@ -56,13 +56,13 @@ st.markdown("""
 st.sidebar.title("導覽選單")
 st.sidebar.markdown("---")
 
-if st.sidebar.button("系統儀表板 (Dashboard)", use_container_width=True):
+if st.sidebar.button("首頁", use_container_width=True):
     st.session_state["current_page"] = "Home"
 
-if st.sidebar.button("執行診斷 (Diagnostics)", use_container_width=True):
+if st.sidebar.button("網頁檢核", use_container_width=True):
     st.session_state["current_page"] = "Run"
 
-if st.sidebar.button("參數配置 (Configuration)", use_container_width=True):
+if st.sidebar.button("項目選擇", use_container_width=True):
     st.session_state["current_page"] = "Settings"
 
 st.sidebar.markdown("---")

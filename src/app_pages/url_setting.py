@@ -3,24 +3,20 @@ from services.api_client import N8nApiClient
 from utils.test_result import TEST_OPTIONS, display_test_result
 
 def show():
-    st.title("執行診斷 (Diagnostics)")
-    st.markdown("請輸入目標網址並開始執行自動化檢測。")
+    st.title("網頁檢核")
     
     # 初始化 session_state
     if "target_url" not in st.session_state:
         st.session_state["target_url"] = ""
     if "selected_tests" not in st.session_state:
         st.session_state["selected_tests"] = ["檢查連結 (validLink)"]
-
-    # Input Card
-    st.markdown('<div class="stCard">', unsafe_allow_html=True)
-    st.subheader("檢測目標設定")
     
     # 測試模式設定
-    is_test_mode = st.checkbox("啟用測試模式 (Test Mode)", value=True, help="Append -test to the base URL")
+    is_test_mode = st.checkbox("啟用測試模式 (Test Mode)", value=False, help="Append -test to the base URL")
+    #is_test_mode = False
 
     # 使用 Columns 排版：輸入框 + 按鈕
-    col_input, col_btn = st.columns([3, 1])
+    col_input, col_btn = st.columns([3, 1], vertical_alignment="bottom")
     
     with col_input:
         url_input = st.text_input(
@@ -33,18 +29,16 @@ def show():
         st.session_state["target_url"] = url_input
         
     with col_btn:
-        # 增加一點上邊距讓按鈕對齊輸入框
-        st.markdown('<div style="margin-top: 0px;"></div>', unsafe_allow_html=True) 
         run_btn = st.button("開始檢測 (Start)", type="primary", use_container_width=True)
 
     # 顯示目前設定狀態
     selected_count = len(st.session_state["selected_tests"])
     st.caption(f"目前已選定 **{selected_count}** 個測試項目。")
-    st.markdown('</div>', unsafe_allow_html=True)
+    # st.markdown('</div>', unsafe_allow_html=True)
 
     if run_btn:
         if not st.session_state["selected_tests"]:
-            st.error("未選擇任何測試項目！請先至「參數配置」頁面勾選。")
+            st.error("未選擇任何測試項目！請先至「項目選擇」頁面勾選。")
         elif not url_input:
             st.error("請輸入目標網址！")
         else:
@@ -66,7 +60,7 @@ def show():
                     status_text.text(f"正在執行: {test_name} ({i+1}/{selected_count})...")
                     
                     # 每個測試結果包在一個 Card 中
-                    st.markdown(f'<div class="stCard">', unsafe_allow_html=True)
+                    # st.markdown(f'<div class="stCard">', unsafe_allow_html=True)
                     st.markdown(f"#### {test_name}")
                     
                     try:
@@ -77,7 +71,7 @@ def show():
                     except Exception as e:
                         st.error(f"發生錯誤: {str(e)}")
                     
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    # st.markdown('</div>', unsafe_allow_html=True)
                     progress_bar.progress((i + 1) / selected_count)
                 
             status_text.text("所有測試執行完畢。")

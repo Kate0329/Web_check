@@ -3,7 +3,7 @@ import json
 from typing import Optional, Dict, Any
 
 class N8nApiClient:
-    def __init__(self, base_url: str = "http://youth.econcord.com.tw:8080/webhook", is_test: bool = True):
+    def __init__(self, base_url: str = "http://youth.econcord.com.tw:8080/webhook", is_test: bool = False):
         self.base_url = base_url.rstrip('/')
         if is_test:
             self.base_url += "-test"
@@ -35,6 +35,7 @@ class N8nApiClient:
         """
         呼叫 n8n webhook 任何端點的通用方法。
         """
+        print(endpoint)
         return self._make_request(endpoint, method="POST", data=data)
 
     # W3C_Html

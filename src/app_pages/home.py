@@ -1,137 +1,102 @@
 import streamlit as st
 
 def show():
-    # 1. 注入自定義 CSS (專業版樣式)
+    # 設定頁面樣式 (CSS)
     st.markdown("""
         <style>
-        /* 全局字體設定 */
+        /* 強制設定背景色為深色 (若全域未設定) */
         .stApp {
-            background-color: #f4f6f9; /* 企業級淺灰背景 */
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0e1117;
+            color: #fafafa;
         }
         
         /* 標題樣式 */
-        .dashboard-header {
-            font-size: 2rem;
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .dashboard-subheader {
-            font-size: 1rem;
-            color: #7f8c8d;
-            margin-bottom: 2rem;
-        }
-
-        /* 專業卡片樣式 */
-        .pro-card {
-            background-color: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            border-left: 5px solid #3498db; /* 左側藍色強調線 */
-            margin-bottom: 20px;
-            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-        }
-        .pro-card:hover {
-            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-        }
-        
-        /* 卡片標題與內容 */
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-        .card-desc {
-            font-size: 0.95rem;
-            color: #57606f;
-            line-height: 1.6;
-        }
-        
-        /* 輔助卡片 (灰色樣式) */
-        .pro-card-secondary {
-            border-left-color: #bdc3c7;
-            background-color: #ffffff;
-            opacity: 0.8;
-        }
-
-        /* 狀態指標區塊 */
-        .metric-box {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
+        .main-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: -webkit-linear-gradient(45deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 100rem;
             text-align: center;
-            border: 1px solid #dfe6e9;
         }
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
+        
+        /* 說明文字容器 */
+        .description-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 2rem;
         }
-        .metric-label {
-            font-size: 0.8rem;
-            color: #95a5a6;
-            text-transform: uppercase;
+
+        /* 說明文字樣式 */
+        .description-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: #b0b8c4;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        /* 按鈕容器置中 */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 4rem;
+        }
+        
+        /* 版本資訊樣式 */
+        .version-footer {
+            text-align: center;
+            color: #4b5563;
+            font-size: 0.9rem;
+            margin-top: 5rem;
+            border-top: 1px solid #1f2937;
+            padding-top: 2rem;
+        }
+        
+        /* 裝飾性光暈 */
+        .glow-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(58, 123, 213, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # 2. 頁面標題區
-    st.markdown('<div class="dashboard-header">Web Diagnostic System</div>', unsafe_allow_html=True)
-    st.markdown('<div class="dashboard-subheader">網站健康度自動化診斷系統</div>', unsafe_allow_html=True)
+    # 頁面佈局容器
+    with st.container():
+        # 裝飾背景
+        st.markdown('<div class="glow-effect"></div>', unsafe_allow_html=True)
+        
+        # 空白佔位，讓內容垂直置中一點
+        st.markdown('<div style="height: 20vh;"></div>', unsafe_allow_html=True)
+        
+        # 歡迎標題
+        st.markdown('<h1 class="main-title">歡迎使用 Web Diagnostic System</h1>', unsafe_allow_html=True)
+        
+        # 說明文字
+        st.markdown(
+            '<div class="description-wrapper"><p class="description-text">本系統協助檢測網站品質，例如 無障礙、W3C 標準等。<br>透過自動化工具，快速掌握網站狀況。</p></div>', 
+            unsafe_allow_html=True
+        )
+        
+        # # 開始使用按鈕
+        # # 使用 columns 來置中按鈕
+        # col1, col2, col3 = st.columns([1, 1, 1])
+        # with col2:
+        #     if st.button("開始使用 ", use_container_width=True):
+        #         st.session_state["current_page"] = "Run"
+        #         st.rerun()
 
-    # 3. 系統狀態指標
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown('<div class="metric-box"><div class="metric-value">Online</div><div class="metric-label">System Status</div></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown('<div class="metric-box"><div class="metric-value">Secure</div><div class="metric-label">Connection</div></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown('<div class="metric-box"><div class="metric-value">v1.0</div><div class="metric-label">Version</div></div>', unsafe_allow_html=True)
-    with c4:
-        st.markdown('<div class="metric-box"><div class="metric-value">Ready</div><div class="metric-label">Scanner</div></div>', unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    # 4. 功能區塊
-    st.markdown("#### 系統模組 System Modules")
-
-    # 主要功能卡片
-    col_main, col_placeholder = st.columns([0.6, 0.4])
-
-    with col_main:
-        st.markdown("""
-        <div class="pro-card">
-            <div class="card-title">全面檢測 (Full Inspection)</div>
-            <div class="card-desc">
-                執行完整的 N8n 節點連線測試。支援批次勾選項目，針對 Credential 與 Workflow 進行深度驗證，並生成詳細的狀態報告。
-                <br><br>
-                <strong>適用情境：</strong> 定期巡檢、部署前驗證、故障排除。
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_placeholder:
-        # 佔位功能 (顯示系統未來的擴充性，同時填補版面)
-        st.markdown("""
-        <div class="pro-card pro-card-secondary">
-            <div class="card-title">自動排程 (Coming Soon)</div>
-            <div class="card-desc">
-                定時自動執行檢測任務，並透過 Email 或 Slack 發送異常通知。<br>
-                <i>此功能目前正在開發中。</i>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # 5. 底部資訊
-    st.markdown(
-        """
-        <div style='margin-top: 50px; padding-top: 20px; border-top: 1px solid #dfe6e9; text-align: center; color: #b2bec3; font-size: 0.8rem;'>
-        &copy; 2024 N8n Monitoring System. Internal Use Only.
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
+        # 版本資訊
+        st.markdown('<div class="version-footer">v1.0</div>', unsafe_allow_html=True)
