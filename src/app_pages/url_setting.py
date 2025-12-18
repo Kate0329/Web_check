@@ -10,6 +10,18 @@ def show():
         st.session_state["target_url"] = ""
     if "selected_tests" not in st.session_state:
         st.session_state["selected_tests"] = ["檢查連結 (validLink)"]
+    if "havemail_url" not in st.session_state:
+        st.session_state["havemail_url"] = ""
+    if "classification_url" not in st.session_state:
+        st.session_state["classification_url"] = ""
+    if "isupdate_url" not in st.session_state:
+        st.session_state["isupdate_url"] = ""
+    if "haveNews_url" not in st.session_state:
+        st.session_state["haveNews_url"] = ""
+    if "publicdata_url" not in st.session_state:
+        st.session_state["publicdata_url"] = ""
+    if "sitemap_url" not in st.session_state:
+        st.session_state["sitemap_url"] = ""
     
     # 測試模式設定
     is_test_mode = st.checkbox("啟用測試模式 (Test Mode)", value=False, help="Append -test to the base URL")
@@ -30,6 +42,66 @@ def show():
         
     with col_btn:
         run_btn = st.button("開始檢測 (Start)", type="primary", use_container_width=True)
+
+    # 意見信箱
+    st.markdown("### 意見信箱")
+    havemail_url_input = st.text_input(
+        "意見信箱URL", 
+        value=st.session_state["havemail_url"], 
+        label_visibility="collapsed", 
+        placeholder="非必填 - 若需要測試請輸入相關信息"
+    )
+    st.session_state["havemail_url"] = havemail_url_input
+
+    # 內容分類
+    st.markdown("### 內容分類")
+    classification_url_input = st.text_input(
+        "內容分類URL (haveClassification)",
+        value=st.session_state["classification_url"],
+        label_visibility="collapsed",
+        placeholder="非必填 - 若需要測試請輸入相關信息"
+    )
+    st.session_state["classification_url"] = classification_url_input
+
+    # 內容更新
+    st.markdown("### 內容更新")
+    isupdate_url_input = st.text_input(
+        "內容更新URL (isUpdateShow)",
+        value=st.session_state["isupdate_url"],
+        label_visibility="collapsed",
+        placeholder="非必填 - 若需要測試請輸入相關信息"
+    )
+    st.session_state["isupdate_url"] = isupdate_url_input
+
+    # 重大政策
+    st.markdown("### 重大政策")
+    haveNews_url_input = st.text_input(
+        "重大政策URL (haveNews)",
+        value=st.session_state["haveNews_url"],
+        label_visibility="collapsed",
+        placeholder="非必填 - 若需要測試請輸入相關信息"
+    )
+    st.session_state["haveNews_url"] = haveNews_url_input
+
+    # 公開資訊
+    st.markdown("### 公開資訊")
+    publicdata_url_input = st.text_input(
+        "公開資訊URL (havePublicData)",
+        value=st.session_state["publicdata_url"],
+        label_visibility="collapsed",
+        placeholder="非必填 - 若需要測試請輸入相關信息"
+    )
+    st.session_state["publicdata_url"] = publicdata_url_input
+
+    # 提供Sitemap.xml文件
+    st.markdown("### 提供Sitemap.xml文件")
+    sitemap_url_input = st.text_input(
+        "提供Sitemap.xml文件URL (Sitemap)",
+        value=st.session_state["sitemap_url"],
+        label_visibility="collapsed",
+        placeholder="非必填 - 若需要測試請輸入相關信息"
+    )
+    st.session_state["sitemap_url"] = sitemap_url_input
 
     # 顯示目前設定狀態
     selected_count = len(st.session_state["selected_tests"])
@@ -67,7 +139,7 @@ def show():
                         with st.spinner(f"正在連線至 {endpoint}..."):
                             response = client.call_endpoint(endpoint, data=payload)
                         
-                        display_test_result(endpoint, response)
+                        display_test_result(endpoint, response, label=test_name)
                     except Exception as e:
                         st.error(f"發生錯誤: {str(e)}")
                     

@@ -81,3 +81,99 @@ class N8nApiClient:
     # 無障礙檢測
     def check_accessibility(self, link: str) -> Dict[str, Any]:
         return self.call_endpoint("accessibility", {"link": link})
+
+    # 網站名稱或標誌
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 網站無障礙標章
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 網站資料開放宣告
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 隱私權及資訊安全宣告
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 完整通訊地址
+    def check_address(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("address", {"link": link})
+
+    # 聯絡電話
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 網站具備多語言版本
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 頁尾設計
+    def check_footer(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("footer", {"link": link})
+
+    # 網站導覽功能
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 提供Sitemap.xml文件
+    def check_Sitemap(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Sitemap", {"link": link})
+
+    # 提供路徑導覽列
+    def check_breadcrumb(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("isUpdateShow", {"link": link})
+
+    # 重大政策
+    def check_haveNews(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("haveNews", {"link": link})
+
+    # 資訊圖像化
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 公開資訊
+    def check_havePublicData(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("havePublicData", {"link": link})
+
+    # 內容分類
+    def check_haveClassification(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("haveClassification", {"link": link})
+
+    # 相關連結
+    def check_haveRelatedLink(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("haveClassification", {"link": link})
+
+    # 內容更新
+    def check_isUpdateShow(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("isUpdateShow", {"link": link})
+
+    # 更新頻率
+    def check_updateFreq(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("isUpdateShow", {"link": link})
+
+    # 搜尋服務
+    def check_haveSearch(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 熱門關鍵字
+    def check_searchKey(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("GA", {"link": link})
+
+    # 搜尋建議
+    def check_searchSug(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("GA", {"link": link})
+
+    # 意見信箱
+    def check_haveMail(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("haveMail", {"link": link})
+
+    # 社群分享
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
+
+    # 社群互動
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
