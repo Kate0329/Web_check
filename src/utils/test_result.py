@@ -308,18 +308,22 @@ def parse_rwd_response(response):
         main_data = response[0]
     
     if isinstance(main_data, dict):
+        # 優先檢查是否有 hasRWD (對應截圖格式)
+        if "hasRWD" in main_data:
+            return True, main_data["hasRWD"], main_data.get("totalMediaQueries", 0)
+
         # 檢查是否有 hasThreeMedias (新格式)
         if "hasThreeMedias" in main_data:
-            return True, main_data["hasThreeMedias"]
+            return True, main_data["hasThreeMedias"], 0
             
         # 檢查標準格式 
         if "output" in main_data:
             output = main_data["output"]
             rwd_data =  output.get("RWD")
             if rwd_data and "passed" in rwd_data:
-                return True, rwd_data["passed"]
+                return True, rwd_data["passed"], 0
                 
-    return False, False
+    return False, False, 0
 
 def parse_favicon_response(response):
     """解析 Favicon 測試結果"""
@@ -451,13 +455,15 @@ def display_test_result(endpoint, response, label=None):
 
     # 6. 響應式設計檢測 (RWD)
     if endpoint == "RWD":
-        is_parsed, passed = parse_rwd_response(response)
+        is_parsed, passed, total_media = parse_rwd_response(response)
             
         if is_parsed:
             if passed:
                 st.success("測試結果 : 通過")
             else:
                 st.error("測試結果 : 未通過")
+            
+            st.markdown(f"**Totalmedia :** {total_media}")
             
             with st.expander("查看詳細 JSON 結果", expanded=False):
                 st.json(response)

@@ -7,7 +7,19 @@ def show():
 
     # 初始化 session_state
     if "selected_tests" not in st.session_state:
-        st.session_state["selected_tests"] = ["檢查連結 (validLink)"]
+        st.session_state["selected_tests"] = []
+
+    # 全選/全不選功能
+    def toggle_all():
+        if st.session_state.select_all_toggle:
+            st.session_state["selected_tests"] = list(TEST_OPTIONS.keys())
+        else:
+            st.session_state["selected_tests"] = []
+
+    # 檢查是否全選
+    is_all_selected = len(st.session_state.get("selected_tests", [])) == len(TEST_OPTIONS)
+    
+    st.checkbox("全選", value=is_all_selected, key="select_all_toggle", on_change=toggle_all)
 
     current_selection = []
     
@@ -65,95 +77,95 @@ def show():
     with col3:
         st.markdown("### AI Agent檢測")
         is_logo_checked = "網站名稱或標誌(logo)" in st.session_state["selected_tests"]
-        if st.checkbox("網站名稱或標誌(logo)", value=True, key="logo"):
+        if st.checkbox("網站名稱或標誌(logo)", value=is_logo_checked):
             current_selection.append("網站名稱或標誌(logo)")
 
         is_datausage_checked = "網站資料開放宣告(dataUsagePolicy)" in st.session_state["selected_tests"]
-        if st.checkbox("網站資料開放宣告(dataUsagePolicy)", value=True, key="dataUsagePolicy"):
+        if st.checkbox("網站資料開放宣告(dataUsagePolicy)", value=is_datausage_checked):
             current_selection.append("網站資料開放宣告(dataUsagePolicy)")
 
         is_privacy_checked = "隱私權及資訊安全宣告(privacyPolicy)" in st.session_state["selected_tests"]
-        if st.checkbox("隱私權及資訊安全宣告(privacyPolicy)", value=True, key="privacyPolicy"):
+        if st.checkbox("隱私權及資訊安全宣告(privacyPolicy)", value=is_privacy_checked):
             current_selection.append("隱私權及資訊安全宣告(privacyPolicy)")
 
         is_address_checked = "完整通訊地址(address)" in st.session_state["selected_tests"]
-        if st.checkbox("完整通訊地址(address)", value=True, key="address"):
+        if st.checkbox("完整通訊地址(address)", value=is_address_checked):
             current_selection.append("完整通訊地址(address)")
 
         is_phone_checked = "聯絡電話(phone)" in st.session_state["selected_tests"]
-        if st.checkbox("聯絡電話(phone)", value=True, key="phone"):
+        if st.checkbox("聯絡電話(phone)", value=is_phone_checked):
             current_selection.append("聯絡電話(phone)")
 
         is_multilang_checked = "網站具備多語言版本(lang)" in st.session_state["selected_tests"]
-        if st.checkbox("網站具備多語言版本(lang)", value=True, key="multilang"):
+        if st.checkbox("網站具備多語言版本(lang)", value=is_multilang_checked):
             current_selection.append("網站具備多語言版本(lang)")
 
         is_footer_checked = "頁尾設計(footer)" in st.session_state["selected_tests"]
-        if st.checkbox("頁尾設計(footer)", value=True, key="footer"):
+        if st.checkbox("頁尾設計(footer)", value=is_footer_checked):
             current_selection.append("頁尾設計(footer)")
 
         is_navigation_checked = "網站導覽功能(navigation )" in st.session_state["selected_tests"]
-        if st.checkbox("網站導覽功能(navigation )", value=True, key="navigation"):
+        if st.checkbox("網站導覽功能(navigation )", value=is_navigation_checked):
             current_selection.append("網站導覽功能(navigation )")
 
         is_searchkey_checked = "提供Sitemap.xml文件(Sitemap )" in st.session_state["selected_tests"]
-        if st.checkbox("提供Sitemap.xml文件(Sitemap )", value=True, key="Sitemap"):
+        if st.checkbox("提供Sitemap.xml文件(Sitemap )", value=is_searchkey_checked):
             current_selection.append("提供Sitemap.xml文件(Sitemap )")
 
         is_searchkey_checked = "提供路徑導覽列(breadcrumb )" in st.session_state["selected_tests"]
-        if st.checkbox("提供路徑導覽列(breadcrumb )", value=True, key="breadcrumb"):
+        if st.checkbox("提供路徑導覽列(breadcrumb )", value=is_searchkey_checked):
             current_selection.append("提供路徑導覽列(breadcrumb )")
 
         is_searchkey_checked = "重大政策(haveNews )" in st.session_state["selected_tests"]
-        if st.checkbox("重大政策(haveNews )", value=True, key="haveNews"):
+        if st.checkbox("重大政策(haveNews )", value=is_searchkey_checked):
             current_selection.append("重大政策(haveNews )")
 
         is_searchkey_checked = "資訊圖像化(haveGraphic )" in st.session_state["selected_tests"]
-        if st.checkbox("資訊圖像化(haveGraphic )", value=True, key="haveGraphic"):
+        if st.checkbox("資訊圖像化(haveGraphic )", value=is_searchkey_checked):
             current_selection.append("資訊圖像化(haveGraphic )")
 
         is_searchkey_checked = "公開資訊(havePublicData )" in st.session_state["selected_tests"]
-        if st.checkbox("公開資訊(havePublicData )", value=True, key="havePublicData"):
+        if st.checkbox("公開資訊(havePublicData )", value=is_searchkey_checked):
             current_selection.append("公開資訊(havePublicData )")
 
         is_searchkey_checked = "內容分類(haveClassification )" in st.session_state["selected_tests"]
-        if st.checkbox("內容分類(haveClassification )", value=True, key="haveClassification"):
+        if st.checkbox("內容分類(haveClassification )", value=is_searchkey_checked):
             current_selection.append("內容分類(haveClassification )")
 
         is_searchkey_checked = "相關連結(haveRelatedLink )" in st.session_state["selected_tests"]
-        if st.checkbox("相關連結(haveRelatedLink )", value=True, key="haveRelatedLink"):
+        if st.checkbox("相關連結(haveRelatedLink )", value=is_searchkey_checked):
             current_selection.append("相關連結(haveRelatedLink )")
 
         is_searchkey_checked = "內容更新(isUpdateShow )" in st.session_state["selected_tests"]
-        if st.checkbox("內容更新(isUpdateShow )", value=True, key="isUpdateShow"):
+        if st.checkbox("內容更新(isUpdateShow )", value=is_searchkey_checked):
             current_selection.append("內容更新(isUpdateShow )")
 
         is_searchkey_checked = "更新頻率(updateFreq )" in st.session_state["selected_tests"]
-        if st.checkbox("更新頻率(updateFreq )", value=True, key="updateFreq"):
+        if st.checkbox("更新頻率(updateFreq )", value=is_searchkey_checked):
             current_selection.append("更新頻率(updateFreq )")
 
         is_searchkey_checked = "搜尋服務(haveSearch )" in st.session_state["selected_tests"]
-        if st.checkbox("搜尋服務(haveSearch )", value=True, key="haveSearch"):
+        if st.checkbox("搜尋服務(haveSearch )", value=is_searchkey_checked):
             current_selection.append("搜尋服務(haveSearch )")
 
         is_searchkey_checked = "熱門關鍵字(searchKey )" in st.session_state["selected_tests"]
-        if st.checkbox("熱門關鍵字(searchKey )", value=True, key="searchKey"):
+        if st.checkbox("熱門關鍵字(searchKey )", value=is_searchkey_checked):
             current_selection.append("熱門關鍵字(searchKey )")
 
         is_searchsug_checked = "搜尋建議(searchSug )" in st.session_state["selected_tests"]
-        if st.checkbox("搜尋建議(searchSug )", value=True, key="searchSug"):
+        if st.checkbox("搜尋建議(searchSug )", value=is_searchsug_checked):
             current_selection.append("搜尋建議(searchSug )")
 
         is_searchsug_checked = "意見信箱(haveMail )" in st.session_state["selected_tests"]
-        if st.checkbox("意見信箱(haveMail )", value=True, key="haveMail"):
+        if st.checkbox("意見信箱(haveMail )", value=is_searchsug_checked):
             current_selection.append("意見信箱(haveMail )")
 
         is_searchsug_checked = "社群分享(haveShare )" in st.session_state["selected_tests"]
-        if st.checkbox("社群分享(haveShare )", value=True, key="haveShare"):
+        if st.checkbox("社群分享(haveShare )", value=is_searchsug_checked):
             current_selection.append("社群分享(haveShare )")
 
         is_searchsug_checked = "社群互動(comunity )" in st.session_state["selected_tests"]
-        if st.checkbox("社群互動(comunity )", value=True, key="comunity"):
+        if st.checkbox("社群互動(comunity )", value=is_searchsug_checked):
             current_selection.append("社群互動(comunity )")
 
     # 更新 session_state
