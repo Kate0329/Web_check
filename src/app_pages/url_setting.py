@@ -35,8 +35,7 @@ def show():
     col_input, col_btn = st.columns([3, 1], vertical_alignment="bottom")
     
     with col_input:
-        # 目標網址
-        st.markdown("目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        st.markdown("##### 目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
         url_input = st.text_input(
             "",
             value=st.session_state["target_url"], 

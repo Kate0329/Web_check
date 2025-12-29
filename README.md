@@ -8,17 +8,19 @@
 - `src/app_pages/`: 包含各個頁面的邏輯。
     - `home.py`: 首頁。
     - `url_setting.py`: 執行檢測頁面 (輸入網址與顯示結果)。
-    - `test_selection.py`: 檢測項目設定頁面。
+    - `selection.py`: 檢測項目設定頁面。
 - `src/services/api_client.py`: 封裝 n8n API 呼叫邏輯的類別。
 - `src/utils/test_result.py`: 處理測試結果的解析與顯示邏輯。
 - `requirements.txt`: 專案依賴套件列表。
 
 ## 功能特色
 
-目前支援以下檢測項目：
-1.  **基本檢測**: 檢查連結有效性 (validLink)。
-2.  **W3C 標準檢測**: HTML 檢查 (W3CHtml)、CSS 檢查 (W3CCss)。
-3.  **效能檢測**: 網速檢測 (pageSpeed)，包含行動版與電腦版評分。
+目前支援多項網站檢測指標，包含但不限於：
+1.  **基本檢測**: 連結有效性 (validLink)、語系編碼 (lang)、加密連結 (https)。
+2.  **W3C 標準**: HTML 檢查 (W3CHtml)、CSS 檢查 (W3CCss)。
+3.  **效能與體驗**: 網速檢測 (pageSpeed)、響應式設計 (RWD)、網站圖示 (Favicon)、網頁動畫 (Animation)。
+4.  **網站資訊**: 網站名稱/標誌、隱私權宣告、聯絡資訊、Sitemap、導覽功能等。
+5.  **功能檢測**: 搜尋服務、意見信箱、社群分享、流量統計等。
 
 ## 安裝與執行
 

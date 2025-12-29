@@ -1,4 +1,6 @@
 import streamlit as st
+import base64
+from pathlib import Path
 
 # 定義可用的測試項目
 TEST_OPTIONS = {
@@ -45,14 +47,30 @@ def parse_w3c_response(response):
     if isinstance(response, list) and len(response) > 0:
         main_data = response[0]
 
-    if isinstance(main_data, dict) and "output" in main_data:
-        output = main_data["output"]
-        # 檢查 html 或 css
-        result_data = output.get("html") or output.get("css")
+    if isinstance(main_data, dict):
+        # 情況 0: 包在 data 列表裡 (根據截圖)
+        if "data" in main_data and isinstance(main_data["data"], list) and len(main_data["data"]) > 0:
+             inner_data = main_data["data"][0]
+             if isinstance(inner_data, dict) and "passed" in inner_data:
+                 passed = inner_data["passed"]
+                 error_count = inner_data.get("errorCount", 0)
+                 return True, passed, error_count
+
+        # 情況 1: 標準結構 output -> html/css
+        if "output" in main_data:
+            output = main_data["output"]
+            # 檢查 html 或 css
+            result_data = output.get("html") or output.get("css")
+            
+            if result_data and "passed" in result_data:
+                passed = result_data["passed"]
+                error_count = result_data.get("errorCount", 0)
+                return True, passed, error_count
         
-        if result_data and "passed" in result_data:
-            passed = result_data["passed"]
-            error_count = result_data.get("errorCount", 0)
+        # 情況 2: 直接結構 (passed 在根目錄)
+        if "passed" in main_data:
+            passed = main_data["passed"]
+            error_count = main_data.get("errorCount", 0)
             return True, passed, error_count
             
     return False, False, 0
@@ -307,6 +325,15 @@ def parse_rwd_response(response):
         main_data = response[0]
     
     if isinstance(main_data, dict):
+        # 檢查 RWD_DATA (新格式)
+        if "RWD_DATA" in main_data:
+            rwd_data = main_data["RWD_DATA"]
+            has_meta = rwd_data.get("has_meta", False)
+            no_overflow = rwd_data.get("no_overflow", False)
+            # 如果 has_meta 或 no_overflow 其中一個為 true，就給過
+            passed = has_meta or no_overflow
+            return True, passed, 0
+
         # 優先檢查是否有 hasRWD (對應截圖格式)
         if "hasRWD" in main_data:
             return True, main_data["hasRWD"], main_data.get("totalMediaQueries", 0)
@@ -362,10 +389,21 @@ def parse_accessibility_response(response):
         main_data = response[0]
     
     if isinstance(main_data, dict):
+        # 優先檢查新格式 (hasAccessibilityBadgeLink)
+        if "hasAccessibilityBadgeLink" in main_data:
+            passed = main_data["hasAccessibilityBadgeLink"]
+            link = None
+            if passed and "accessibilityBadgeLinks" in main_data:
+                links_data = main_data["accessibilityBadgeLinks"]
+                if isinstance(links_data, list) and len(links_data) > 0:
+                    link = links_data[0].get("link")
+            return True, passed, link
+
+        # 舊格式相容
         if "hasAccessibility" in main_data:
-            return True, main_data["hasAccessibility"]
+            return True, main_data["hasAccessibility"], None
             
-    return False, False
+    return False, False, None
 
 def parse_animation_response(response):
     """解析網頁動畫檢測結果"""
@@ -381,6 +419,10 @@ def parse_animation_response(response):
             
     return False, False
 
+def image_to_base64(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
 def display_test_result(endpoint, response, label=None):
     
     # 1. W3C 檢查 (HTML & CSS)
@@ -392,9 +434,48 @@ def display_test_result(endpoint, response, label=None):
             else:
                 st.error("測試結果 : 未通過")
                 st.markdown(f"**不合格 :** {error_count}")
+
+                # 顯示錯誤列表
+                main_data = response
+                if isinstance(response, list) and len(response) > 0:
+                    main_data = response[0]
+
+                result_data = None
+                if isinstance(main_data, dict):
+                    if "data" in main_data and isinstance(main_data["data"], list) and len(main_data["data"]) > 0:
+                        result_data = main_data["data"][0]
+                    elif "output" in main_data:
+                        output = main_data["output"]
+                        result_data = output.get("html") or output.get("css")
+                    elif "passed" in main_data:
+                        result_data = main_data
+
+                if result_data and "errors" in result_data:
+                    errors = result_data["errors"]
+                    if errors:
+                        with st.expander("查看錯誤列表", expanded=True):
+                                for err in errors:
+                                    file_name = err.get("file", "Unknown")
+                                    line = err.get("line", "?")
+                                    selector = err.get("selector", "")
+                                    message = err.get("message", "")
+                                    link = err.get("link", "")
+                                    
+                                    st.markdown(f"**File:** {file_name} (Line: {line})")
+                                    if selector:
+                                        st.markdown(f"**Selector:** `{selector}`")
+                                    st.markdown(f"**Message:** {message}")
+                                    if link:
+                                        st.markdown(f"**Link:** [{link}]({link})")
+                                    st.markdown("---")
             
             # 顯示詳細資料 (預設摺疊)
             with st.expander("查看詳細 JSON 結果", expanded=False):
+                st.json(response)
+            return
+        else:
+            st.warning("無法解析 W3C 測試結果")
+            with st.expander("查看原始回應", expanded=True):
                 st.json(response)
             return
 
@@ -407,6 +488,43 @@ def display_test_result(endpoint, response, label=None):
             else:
                 st.error("測試結果 : 未通過")
                 st.markdown(f"**不合格 :** {broken_count}")
+
+                # 顯示錯誤列表
+                main_data = response
+                if isinstance(response, list) and len(response) > 0:
+                    main_data = response[0]
+                
+                if isinstance(main_data, dict) and "output" in main_data:
+                    links_data = main_data["output"].get("links", {})
+                    
+                    # 優先檢查 summary (新格式)
+                    summary = links_data.get("summary", [])
+                    if summary:
+                        with st.expander("查看失效連結列表", expanded=True):
+                            for group in summary:
+                                code = group.get("code", "Unknown")
+                                links = group.get("links", [])
+                                for link_obj in links:
+                                    url = link_obj.get("url", "")
+                                    if url:
+                                        st.markdown(f"**Status:** {code}")
+                                        st.markdown(f"**Link:** [{url}]({url})")
+                                        st.markdown("---")
+
+                    # 相容舊格式 errors
+                    errors = links_data.get("errors", [])
+                    if errors and not summary:
+                        with st.expander("查看失效連結列表", expanded=True):
+                            for err in errors:
+                                link = err.get("link", "")
+                                status = err.get("status", "Unknown")
+                                message = err.get("message", "")
+                                
+                                st.markdown(f"**Status:** {status}")
+                                st.markdown(f"**Message:** {message}")
+                                if link:
+                                    st.markdown(f"**Link:** [{link}]({link})")
+                                st.markdown("---")
             
             with st.expander("查看詳細 JSON 結果", expanded=False):
                 st.json(response)
@@ -462,7 +580,8 @@ def display_test_result(endpoint, response, label=None):
             else:
                 st.error("測試結果 : 未通過")
             
-            st.markdown(f"**Totalmedia :** {total_media}")
+            if total_media and total_media > 0:
+                st.markdown(f"**Totalmedia :** {total_media}")
             
             with st.expander("查看詳細 JSON 結果", expanded=False):
                 st.json(response)
@@ -515,23 +634,40 @@ def display_test_result(endpoint, response, label=None):
 
     # 10. 無障礙檢測 (accessibility)
     if endpoint == "accessibility":
-        is_parsed, passed = parse_accessibility_response(response)
-        
+        is_parsed, passed, link = parse_accessibility_response(response)
+
         if is_parsed:
             if passed:
                 st.success("測試結果 : 通過")
+
+                if link:
+                    img_base64 = image_to_base64("static/images/ic_acc.jpg")
+
+                    st.markdown(
+                        f'''
+                        👉 點擊下方無障礙標章前往聲明  
+                        <a href="{link}" target="_blank">
+                            <img src="data:image/jpeg;base64,{img_base64}"
+                                 alt="無障礙標章"
+                                 style="height:60px; margin-top:8px;">
+                        </a>
+                        ''',
+                        unsafe_allow_html=True
+                    )
+
             else:
                 st.error("測試結果 : 未通過")
-            
+
             with st.expander("查看詳細 JSON 結果", expanded=False):
                 st.json(response)
+
             return
 
-    # 11. 錯誤處理
-    if isinstance(response, dict):
-        if "error" in response and response.get("status") == "failed":
-            st.error(f"請求失敗: {response['error']}")
-            return
+    # 11. 錯誤處理 (已移至最上方，此處保留作為備用或移除)
+    # if isinstance(response, dict):
+    #     if "error" in response and response.get("status") == "failed":
+    #         st.error(f"請求失敗: {response['error']}")
+    #         return
 
     # 12. 多項共用 Screenshot 的輸出
 
