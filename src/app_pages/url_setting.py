@@ -35,7 +35,7 @@ def show():
     col_input, col_btn = st.columns([3, 1], vertical_alignment="bottom")
     
     with col_input:
-        st.markdown("##### 目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        st.markdown("#### 目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
         url_input = st.text_input(
             "",
             value=st.session_state["target_url"], 
@@ -48,64 +48,71 @@ def show():
         run_btn = st.button("開始檢測 (Start)", type="primary", use_container_width=True)
 
     # 意見信箱
-    st.markdown("### 意見信箱頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-    havemail_url_input = st.text_input(
-        "意見信箱URL", 
-        value=st.session_state["havemail_url"], 
-        label_visibility="collapsed", 
-        placeholder="可測試：haveMail意見信箱"
-    )
-    st.session_state["havemail_url"] = havemail_url_input
+    if "意見信箱(haveMail )" in st.session_state["selected_tests"]:
+        st.markdown("### 意見信箱頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        havemail_url_input = st.text_input(
+            "意見信箱URL", 
+            value=st.session_state["havemail_url"], 
+            label_visibility="collapsed", 
+            placeholder="可測試：haveMail意見信箱"
+        )
+        st.session_state["havemail_url"] = havemail_url_input
 
     # 網頁導覽
-    st.markdown("### 網頁導覽頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-    classification_url_input = st.text_input(
-        "內容分類URL (haveClassification)",
-        value=st.session_state.get("classification_url", ""),
-        label_visibility="collapsed",
-        placeholder="可測試：navigation頁首提供「網站導覽」"
-    )
-    st.session_state["classification_url"] = classification_url_input
+    if "網站導覽功能(navigation )" in st.session_state["selected_tests"]:
+        st.markdown("### 網頁導覽頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        navigation_url_input = st.text_input(
+            "網頁導覽URL",
+            value=st.session_state.get("navigation_url", ""),
+            label_visibility="collapsed",
+            placeholder="可測試：navigation頁首提供「網站導覽」"
+        )
+        st.session_state["navigation_url"] = navigation_url_input
 
     # 內容更新
-    st.markdown("### 最新消息頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-    isupdate_url_input = st.text_input(
-        "內容更新URL (isUpdateShow)",
-        value=st.session_state["isupdate_url"],
-        label_visibility="collapsed",
-        placeholder="可測試：isUpdateShow內容更新   updateFreq更新頻率   breadcrumb提供路徑導覽列   haveClassification內容分類"
-    )
-    st.session_state["isupdate_url"] = isupdate_url_input
+    isupdate_tests = ["內容更新(isUpdateShow )", "更新頻率(updateFreq )", "提供路徑導覽列(breadcrumb )", "內容分類(haveClassification )"]
+    if any(test in st.session_state["selected_tests"] for test in isupdate_tests):
+        st.markdown("### 最新消息頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        isupdate_url_input = st.text_input(
+            "內容更新URL (isUpdateShow)",
+            value=st.session_state["isupdate_url"],
+            label_visibility="collapsed",
+            placeholder="可測試：isUpdateShow內容更新   updateFreq更新頻率   breadcrumb提供路徑導覽列   haveClassification內容分類"
+        )
+        st.session_state["isupdate_url"] = isupdate_url_input
 
     # 重大政策
-    st.markdown("### 重大政策頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-    haveNews_url_input = st.text_input(
-        "重大政策URL (haveNews)",
-        value=st.session_state["haveNews_url"],
-        label_visibility="collapsed",
-        placeholder="可測試：haveNews重大政策"
-    )
-    st.session_state["haveNews_url"] = haveNews_url_input
+    if "重大政策(haveNews )" in st.session_state["selected_tests"]:
+        st.markdown("### 重大政策頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        haveNews_url_input = st.text_input(
+            "重大政策URL (haveNews)",
+            value=st.session_state["haveNews_url"],
+            label_visibility="collapsed",
+            placeholder="可測試：haveNews重大政策"
+        )
+        st.session_state["haveNews_url"] = haveNews_url_input
 
     # 公開資訊
-    st.markdown("### 公開資訊頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-    publicdata_url_input = st.text_input(
-        "公開資訊URL (havePublicData)",
-        value=st.session_state["publicdata_url"],
-        label_visibility="collapsed",
-        placeholder="可測試：havePublicData公開資訊"
-    )
-    st.session_state["publicdata_url"] = publicdata_url_input
+    if "公開資訊(havePublicData )" in st.session_state["selected_tests"]:
+        st.markdown("### 公開資訊頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        publicdata_url_input = st.text_input(
+            "公開資訊URL (havePublicData)",
+            value=st.session_state["publicdata_url"],
+            label_visibility="collapsed",
+            placeholder="可測試：havePublicData公開資訊"
+        )
+        st.session_state["publicdata_url"] = publicdata_url_input
 
     # Sitemap.xml
-    st.markdown("### Sitemap.xml頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-    sitemap_url_input = st.text_input(
-        "提供Sitemap.xml文件URL (Sitemap)",
-        value=st.session_state["sitemap_url"],
-        label_visibility="collapsed",
-        placeholder="可測試：sitemap是否為Sitemap.xml文件"
-    )
-    st.session_state["sitemap_url"] = sitemap_url_input
+    if "提供Sitemap.xml文件(Sitemap )" in st.session_state["selected_tests"]:
+        st.markdown("### Sitemap.xml頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        sitemap_url_input = st.text_input(
+            "提供Sitemap.xml文件URL (Sitemap)",
+            value=st.session_state["sitemap_url"],
+            label_visibility="collapsed",
+            placeholder="可測試：sitemap是否為Sitemap.xml文件"
+        )
+        st.session_state["sitemap_url"] = sitemap_url_input
 
 
     selected_count = len(st.session_state["selected_tests"])
@@ -119,14 +126,27 @@ def show():
             st.error("請輸入目標網址！")
         else:
             #必填檢查
-            required_fields = {
-                "havemail_url": ("意見信箱URL", st.session_state.get("havemail_url", "")),
-                "classification_url": ("內容分類URL (haveClassification)", st.session_state.get("classification_url", "")),
-                "isupdate_url": ("內容更新URL (isUpdateShow)", st.session_state.get("isupdate_url", "")),
-                "haveNews_url": ("重大政策URL (haveNews)", st.session_state.get("haveNews_url", "")),
-                "publicdata_url": ("公開資訊URL (havePublicData)", st.session_state.get("publicdata_url", "")),
-                "sitemap_url": ("提供Sitemap.xml文件URL (Sitemap)", st.session_state.get("sitemap_url", "")),
-            }
+            required_fields = {}
+            selected_tests = st.session_state["selected_tests"]
+
+            if "意見信箱(haveMail )" in selected_tests:
+                required_fields["havemail_url"] = ("意見信箱頁連結", st.session_state.get("havemail_url", ""))
+            
+            if "網站導覽功能(navigation )" in selected_tests:
+                required_fields["navigation_url"] = ("網頁導覽頁連結", st.session_state.get("navigation_url", ""))
+
+            isupdate_tests = ["內容更新(isUpdateShow )", "更新頻率(updateFreq )", "提供路徑導覽列(breadcrumb )", "內容分類(haveClassification )"]
+            if any(test in selected_tests for test in isupdate_tests):
+                required_fields["isupdate_url"] = ("最新消息頁連結", st.session_state.get("isupdate_url", ""))
+
+            if "重大政策(haveNews )" in selected_tests:
+                required_fields["haveNews_url"] = ("重大政策頁連結", st.session_state.get("haveNews_url", ""))
+
+            if "公開資訊(havePublicData )" in selected_tests:
+                required_fields["publicdata_url"] = ("公開資訊頁連結", st.session_state.get("publicdata_url", ""))
+
+            if "提供Sitemap.xml文件(Sitemap )" in selected_tests:
+                required_fields["sitemap_url"] = ("Sitemap.xml頁連結", st.session_state.get("sitemap_url", ""))
 
             missing_labels = [label for _, (label, value) in required_fields.items() if not value.strip()]
             if missing_labels:
@@ -136,7 +156,7 @@ def show():
             # URL 對應：即便網域鎖定暫停，仍需為請求提供對應輸入框 URL
             url_overrides = {
                 "haveMail": st.session_state.get("havemail_url", "").strip(),
-                "classification_url": st.session_state.get("classification_url", "").strip(),
+                "navigation_url": st.session_state.get("navigation_url", "").strip(),
                 "isUpdateShow": st.session_state.get("isupdate_url", "").strip(),
                 "haveNews": st.session_state.get("haveNews_url", "").strip(),
                 "havePublicData": st.session_state.get("publicdata_url", "").strip(),
@@ -146,7 +166,7 @@ def show():
             # 必須使用對應輸入框的端點（不得退回 target_url）
             strict_override_endpoints = {
                 "haveMail",
-                "classification_url",
+                "navigation_url",
                 "isUpdateShow",
                 "haveNews",
                 "havePublicData",
