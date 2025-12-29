@@ -31,6 +31,7 @@ def show():
     col_input, col_btn = st.columns([3, 1], vertical_alignment="bottom")
     
     with col_input:
+        st.markdown("##### 目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
         url_input = st.text_input(
             "目標網址", 
             value=st.session_state["target_url"], 
@@ -44,64 +45,64 @@ def show():
         run_btn = st.button("開始檢測 (Start)", type="primary", use_container_width=True)
 
     # 意見信箱
-    st.markdown("### 意見信箱")
-    havemail_url_input = st.text_input(
-        "意見信箱URL", 
-        value=st.session_state["havemail_url"], 
-        label_visibility="collapsed", 
-        placeholder="非必填 - 若需要測試請輸入相關信息"
-    )
-    st.session_state["havemail_url"] = havemail_url_input
+    if "意見信箱(haveMail )" in st.session_state["selected_tests"]:
+        st.markdown("##### 意見信箱 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        havemail_url_input = st.text_input(
+            "意見信箱URL", 
+            value=st.session_state["havemail_url"], 
+            label_visibility="collapsed"
+        )
+        st.session_state["havemail_url"] = havemail_url_input
 
     # 內容分類
-    st.markdown("### 內容分類")
-    classification_url_input = st.text_input(
-        "內容分類URL (haveClassification)",
-        value=st.session_state["classification_url"],
-        label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
-    )
-    st.session_state["classification_url"] = classification_url_input
+    if "內容分類(haveClassification )" in st.session_state["selected_tests"]:
+        st.markdown("##### 內容分類 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        classification_url_input = st.text_input(
+            "內容分類URL (haveClassification)",
+            value=st.session_state["classification_url"],
+            label_visibility="collapsed"
+        )
+        st.session_state["classification_url"] = classification_url_input
 
     # 內容更新
-    st.markdown("### 內容更新")
-    isupdate_url_input = st.text_input(
-        "內容更新URL (isUpdateShow)",
-        value=st.session_state["isupdate_url"],
-        label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
-    )
-    st.session_state["isupdate_url"] = isupdate_url_input
+    if "內容更新(isUpdateShow )" in st.session_state["selected_tests"]:
+        st.markdown("##### 內容更新 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        isupdate_url_input = st.text_input(
+            "內容更新URL (isUpdateShow)",
+            value=st.session_state["isupdate_url"],
+            label_visibility="collapsed"
+        )
+        st.session_state["isupdate_url"] = isupdate_url_input
 
     # 重大政策
-    st.markdown("### 重大政策")
-    haveNews_url_input = st.text_input(
-        "重大政策URL (haveNews)",
-        value=st.session_state["haveNews_url"],
-        label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
-    )
-    st.session_state["haveNews_url"] = haveNews_url_input
+    if "重大政策(haveNews )" in st.session_state["selected_tests"]:
+        st.markdown("##### 重大政策 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        haveNews_url_input = st.text_input(
+            "重大政策URL (haveNews)",
+            value=st.session_state["haveNews_url"],
+            label_visibility="collapsed"
+        )
+        st.session_state["haveNews_url"] = haveNews_url_input
 
     # 公開資訊
-    st.markdown("### 公開資訊")
-    publicdata_url_input = st.text_input(
-        "公開資訊URL (havePublicData)",
-        value=st.session_state["publicdata_url"],
-        label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
-    )
-    st.session_state["publicdata_url"] = publicdata_url_input
+    if "公開資訊(havePublicData )" in st.session_state["selected_tests"]:
+        st.markdown("##### 公開資訊 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        publicdata_url_input = st.text_input(
+            "公開資訊URL (havePublicData)",
+            value=st.session_state["publicdata_url"],
+            label_visibility="collapsed"
+        )
+        st.session_state["publicdata_url"] = publicdata_url_input
 
     # 提供Sitemap.xml文件
-    st.markdown("### 提供Sitemap.xml文件")
-    sitemap_url_input = st.text_input(
-        "提供Sitemap.xml文件URL (Sitemap)",
-        value=st.session_state["sitemap_url"],
-        label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
-    )
-    st.session_state["sitemap_url"] = sitemap_url_input
+    if "提供Sitemap.xml文件(Sitemap )" in st.session_state["selected_tests"]:
+        st.markdown("##### 提供Sitemap.xml文件 <span style='color:red'>*</span>", unsafe_allow_html=True)
+        sitemap_url_input = st.text_input(
+            "提供Sitemap.xml文件URL (Sitemap)",
+            value=st.session_state["sitemap_url"],
+            label_visibility="collapsed"
+        )
+        st.session_state["sitemap_url"] = sitemap_url_input
 
     # 顯示目前設定狀態
     selected_count = len(st.session_state["selected_tests"])
