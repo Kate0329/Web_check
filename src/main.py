@@ -3,7 +3,6 @@ from app_pages import home, url_setting, selection
 
 st.set_page_config(page_title="Web Diagnostic System", layout="wide")
 
-# Initialize session state for page navigation
 if "current_page" not in st.session_state:
     st.session_state["current_page"] = "Home"
 
@@ -52,7 +51,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar Navigation
+
 st.sidebar.title("導覽選單")
 st.sidebar.markdown("---")
 

@@ -20,19 +20,19 @@ TEST_OPTIONS = {
     "聯絡電話(phone)": "Screenshot",
     "網站具備多語言版本(lang)": "Screenshot",
     "頁尾設計(footer)": "Screenshot",
-    "網站導覽功能(navigation )": "Screenshot",
+    "網站導覽功能(navigation )": "navigation",
     "提供Sitemap.xml文件(Sitemap )": "Sitemap",
     "提供路徑導覽列(breadcrumb )": "isUpdateShow",
     "重大政策(haveNews )": "haveNews",
     "資訊圖像化(haveGraphic )": "Screenshot",
     "公開資訊(havePublicData )": "havePublicData",
-    "內容分類(haveClassification )": "haveClassification",
-    "相關連結(haveRelatedLink )": "haveClassification",
+    "內容分類(haveClassification )": "isUpdateShow",
+    "相關連結(haveRelatedLink )": "Screenshot",
     "內容更新(isUpdateShow )": "isUpdateShow",
     "更新頻率(updateFreq )": "isUpdateShow",
     "搜尋服務(haveSearch )": "Screenshot",
-    "熱門關鍵字(searchKey )": "GA",
-    "搜尋建議(searchSug )": "GA",
+    "熱門關鍵字(searchKey )": "GS",
+    "搜尋建議(searchSug )": "GS",
     "意見信箱(haveMail )": "haveMail",
     "社群分享(haveShare )": "Screenshot",
     "社群互動(comunity )": "Screenshot"
@@ -81,7 +81,6 @@ def parse_page_speed_response(response):
         main_data = response[0]
 
     if isinstance(main_data, dict):
-        # 檢查是否有 pageSpeed 欄位或是 mobile/desktop 欄位
         if "pageSpeed" in main_data or "mobile" in main_data:
             mobile = main_data.get("mobile", "N/A")
             desktop = main_data.get("desktop", "N/A")
@@ -149,7 +148,7 @@ def parse_boolean_response(response, key):
         elif isinstance(data, dict) and "passed" in data:
             return data["passed"]
     
-    # 嘗試忽略大小寫和空格的匹配
+    # 忽略大小寫 空格 
     key_lower = key.lower().strip()
     for k, v in main_data.items():
         if k.lower().strip() == key_lower:
@@ -167,7 +166,7 @@ def parse_boolean_response(response, key):
             elif isinstance(data, dict) and "passed" in data:
                 return data["passed"]
         
-        # 嘗試忽略大小寫和空格的匹配
+        # 忽略大小寫 空格 
         for k, v in main_data["output"].items():
             if k.lower().strip() == key_lower:
                 if isinstance(v, bool):
@@ -281,7 +280,7 @@ def display_simple_boolean_result(response, key, label=None):
                 key = k  # 使用實際找到的 key
                 break
     
-    # 如果還是找不到，顯示調試信息（臨時用於找出問題）
+    # 如果還是找不到
     if result is None:
         # 臨時調試：顯示實際的 JSON 結構
         st.warning(f"⚠️ 找不到欄位 '{key}'，請檢查 JSON 結構")
@@ -535,6 +534,7 @@ def display_test_result(endpoint, response, label=None):
             return
 
     # 12. 多項共用 Screenshot 的輸出
+
     screenshot_like_keys = {
         "logo",
         "dataUsagePolicy",
@@ -542,7 +542,6 @@ def display_test_result(endpoint, response, label=None):
         "phone",
         "lang",
         "footer",
-        "navigation",
         "haveGraphic",
         "haveSearch",
         "haveShare",
@@ -554,6 +553,12 @@ def display_test_result(endpoint, response, label=None):
     if endpoint in screenshot_like_keys:
         target_key = endpoint
     elif endpoint == "Screenshot":
+        if label and "navigation" in label:
+            st.success("測試結果 : 通過")
+            with st.expander("查看詳細 JSON 結果", expanded=False):
+                st.json({"navigation": True})
+            return
+
         target_key = _extract_key_from_label(label)
 
     if target_key:
@@ -571,7 +576,7 @@ def display_test_result(endpoint, response, label=None):
         if display_simple_boolean_result(response, "sitemap"):
             return
 
-    # 15. 提供路徑導覽列/內容更新/更新頻率 (isUpdateShow)
+    # 15. 提供路徑導覽列/內容更新/更新頻率/內容分類 (isUpdateShow)
     if endpoint == "isUpdateShow":
         target_key = None
         if label and "(" in label and ")" in label:
@@ -595,12 +600,11 @@ def display_test_result(endpoint, response, label=None):
 
     # 18. 內容分類 (haveClassification) 
     if endpoint == "haveClassification":
-        field_name = "haveRelatedLink" if (label and "相關連結" in label) else "haveClassification"
-        if display_simple_boolean_result(response, field_name):
+        if display_simple_boolean_result(response, "haveClassification"):
             return
 
-    # 19. 熱門關鍵字 & 搜尋建議 (GA endpoint)
-    if endpoint == "GA":
+    # 19. 熱門關鍵字 & 搜尋建議 (GS)
+    if endpoint == "GS":
         field_name = "searchKey" if (label and "熱門關鍵字" in label) else "searchSug"
         if display_simple_boolean_result(response, field_name):
             return

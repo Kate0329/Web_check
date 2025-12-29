@@ -140,11 +140,11 @@ class N8nApiClient:
 
     # 內容分類
     def check_haveClassification(self, link: str) -> Dict[str, Any]:  
-        return self.call_endpoint("haveClassification", {"link": link})
+        return self.call_endpoint("isUpdateShow", {"link": link})
 
     # 相關連結
-    def check_haveRelatedLink(self, link: str) -> Dict[str, Any]:  
-        return self.call_endpoint("haveClassification", {"link": link})
+    def check_Screenshot(self, link: str) -> Dict[str, Any]:  
+        return self.call_endpoint("Screenshot", {"link": link})
 
     # 內容更新
     def check_isUpdateShow(self, link: str) -> Dict[str, Any]:  
@@ -160,11 +160,11 @@ class N8nApiClient:
 
     # 熱門關鍵字
     def check_searchKey(self, link: str) -> Dict[str, Any]:  
-        return self.call_endpoint("GA", {"link": link})
+        return self.call_endpoint("GS", {"link": link})
 
     # 搜尋建議
     def check_searchSug(self, link: str) -> Dict[str, Any]:  
-        return self.call_endpoint("GA", {"link": link})
+        return self.call_endpoint("GS", {"link": link})
 
     # 意見信箱
     def check_haveMail(self, link: str) -> Dict[str, Any]:  

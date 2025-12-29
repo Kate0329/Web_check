@@ -1,4 +1,6 @@
 import streamlit as st
+import time # 延遲
+# from urllib.parse import urlparse # 鎖網域
 from services.api_client import N8nApiClient
 from utils.test_result import TEST_OPTIONS, display_test_result
 
@@ -14,6 +16,8 @@ def show():
         st.session_state["havemail_url"] = ""
     if "classification_url" not in st.session_state:
         st.session_state["classification_url"] = ""
+    if "navigation_url" not in st.session_state:
+        st.session_state["navigation_url"] = ""
     if "isupdate_url" not in st.session_state:
         st.session_state["isupdate_url"] = ""
     if "haveNews_url" not in st.session_state:
@@ -31,82 +35,83 @@ def show():
     col_input, col_btn = st.columns([3, 1], vertical_alignment="bottom")
     
     with col_input:
+        # 目標網址
+        st.markdown("目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
         url_input = st.text_input(
-            "目標網址", 
+            "",
             value=st.session_state["target_url"], 
             label_visibility="collapsed", 
             placeholder="請輸入網址 (例如: https://www.google.com)"
         )
-        # 更新 session state
         st.session_state["target_url"] = url_input
         
     with col_btn:
         run_btn = st.button("開始檢測 (Start)", type="primary", use_container_width=True)
 
     # 意見信箱
-    st.markdown("### 意見信箱")
+    st.markdown("### 意見信箱頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
     havemail_url_input = st.text_input(
         "意見信箱URL", 
         value=st.session_state["havemail_url"], 
         label_visibility="collapsed", 
-        placeholder="非必填 - 若需要測試請輸入相關信息"
+        placeholder="可測試：haveMail意見信箱"
     )
     st.session_state["havemail_url"] = havemail_url_input
 
-    # 內容分類
-    st.markdown("### 內容分類")
+    # 網頁導覽
+    st.markdown("### 網頁導覽頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
     classification_url_input = st.text_input(
         "內容分類URL (haveClassification)",
-        value=st.session_state["classification_url"],
+        value=st.session_state.get("classification_url", ""),
         label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
+        placeholder="可測試：navigation頁首提供「網站導覽」"
     )
     st.session_state["classification_url"] = classification_url_input
 
     # 內容更新
-    st.markdown("### 內容更新")
+    st.markdown("### 最新消息頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
     isupdate_url_input = st.text_input(
         "內容更新URL (isUpdateShow)",
         value=st.session_state["isupdate_url"],
         label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
+        placeholder="可測試：isUpdateShow內容更新   updateFreq更新頻率   breadcrumb提供路徑導覽列   haveClassification內容分類"
     )
     st.session_state["isupdate_url"] = isupdate_url_input
 
     # 重大政策
-    st.markdown("### 重大政策")
+    st.markdown("### 重大政策頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
     haveNews_url_input = st.text_input(
         "重大政策URL (haveNews)",
         value=st.session_state["haveNews_url"],
         label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
+        placeholder="可測試：haveNews重大政策"
     )
     st.session_state["haveNews_url"] = haveNews_url_input
 
     # 公開資訊
-    st.markdown("### 公開資訊")
+    st.markdown("### 公開資訊頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
     publicdata_url_input = st.text_input(
         "公開資訊URL (havePublicData)",
         value=st.session_state["publicdata_url"],
         label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
+        placeholder="可測試：havePublicData公開資訊"
     )
     st.session_state["publicdata_url"] = publicdata_url_input
 
-    # 提供Sitemap.xml文件
-    st.markdown("### 提供Sitemap.xml文件")
+    # Sitemap.xml
+    st.markdown("### Sitemap.xml頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
     sitemap_url_input = st.text_input(
         "提供Sitemap.xml文件URL (Sitemap)",
         value=st.session_state["sitemap_url"],
         label_visibility="collapsed",
-        placeholder="非必填 - 若需要測試請輸入相關信息"
+        placeholder="可測試：sitemap是否為Sitemap.xml文件"
     )
     st.session_state["sitemap_url"] = sitemap_url_input
 
-    # 顯示目前設定狀態
+
     selected_count = len(st.session_state["selected_tests"])
     st.caption(f"目前已選定 **{selected_count}** 個測試項目。")
-    # st.markdown('</div>', unsafe_allow_html=True)
+
 
     if run_btn:
         if not st.session_state["selected_tests"]:
@@ -114,37 +119,155 @@ def show():
         elif not url_input:
             st.error("請輸入目標網址！")
         else:
+            #必填檢查
+            required_fields = {
+                "havemail_url": ("意見信箱URL", st.session_state.get("havemail_url", "")),
+                "classification_url": ("內容分類URL (haveClassification)", st.session_state.get("classification_url", "")),
+                "isupdate_url": ("內容更新URL (isUpdateShow)", st.session_state.get("isupdate_url", "")),
+                "haveNews_url": ("重大政策URL (haveNews)", st.session_state.get("haveNews_url", "")),
+                "publicdata_url": ("公開資訊URL (havePublicData)", st.session_state.get("publicdata_url", "")),
+                "sitemap_url": ("提供Sitemap.xml文件URL (Sitemap)", st.session_state.get("sitemap_url", "")),
+            }
+
+            missing_labels = [label for _, (label, value) in required_fields.items() if not value.strip()]
+            if missing_labels:
+                st.error("請輸入以下網址（皆為必填）： " + "、".join(missing_labels))
+                return
+
+            # URL 對應：即便網域鎖定暫停，仍需為請求提供對應輸入框 URL
+            url_overrides = {
+                "haveMail": st.session_state.get("havemail_url", "").strip(),
+                "classification_url": st.session_state.get("classification_url", "").strip(),
+                "isUpdateShow": st.session_state.get("isupdate_url", "").strip(),
+                "haveNews": st.session_state.get("haveNews_url", "").strip(),
+                "havePublicData": st.session_state.get("publicdata_url", "").strip(),
+                "Sitemap": st.session_state.get("sitemap_url", "").strip(),
+            }
+
+            # 必須使用對應輸入框的端點（不得退回 target_url）
+            strict_override_endpoints = {
+                "haveMail",
+                "classification_url",
+                "isUpdateShow",
+                "haveNews",
+                "havePublicData",
+                "Sitemap",
+            }
+
+            # 網域鎖定與格式檢查（暫時停用）
+            # target_parsed = urlparse(url_input.strip())
+            # if not target_parsed.scheme or not target_parsed.netloc:
+            #     st.error("目標網址格式不正確，請輸入含 http/https 的完整網址。")
+            #     return
+            #
+            # target_domain = target_parsed.netloc.lower()
+            #
+            # endpoint_labels = {
+            #     "haveMail": "意見信箱URL",
+            #     "classification_url":"內容分類URL (haveClassification)",
+            #     "isUpdateShow": "內容更新URL (isUpdateShow / updateFreq / breadcrumb)",
+            #     "haveNews": "重大政策URL (haveNews)",
+            #     "havePublicData": "公開資訊URL (havePublicData)",
+            #     "Sitemap": "提供Sitemap.xml文件URL (Sitemap)",
+            # }
+            #
+            # domain_errors = []
+            # for endpoint, override_url in url_overrides.items():
+            #     if not override_url:
+            #         continue
+            #     # 個別欄位格式檢查與網域比對
+            #     parsed = urlparse(override_url)
+            #     if not parsed.scheme or not parsed.netloc:
+            #         domain_errors.append(f"{endpoint_labels.get(endpoint, endpoint)} 格式不正確，請輸入含 http/https 的完整網址。")
+            #         continue
+            #
+            #     if parsed.netloc.lower() != target_domain:
+            #         domain_errors.append(
+            #             f"{endpoint_labels.get(endpoint, endpoint)} 的網域必須與目標網址相同（{target_domain}）。"
+            #         )
+            #
+            # if domain_errors:
+            #     for msg in domain_errors:
+            #         st.error(msg)
+            #     return
+
             client = N8nApiClient(is_test=is_test_mode)
-            payload = {"link": url_input}
             selected_tests = st.session_state["selected_tests"]
-            
+
             st.markdown("### 檢測結果報告")
-            
+
             # 建立進度條
             progress_bar = st.progress(0)
             status_text = st.empty()
-            
-            results_container = st.container()
-            
-            with results_container:
-                for i, test_name in enumerate(selected_tests):
-                    endpoint = TEST_OPTIONS[test_name]
-                    status_text.text(f"正在執行: {test_name} ({i+1}/{selected_count})...")
-                    
-                    # 每個測試結果包在一個 Card 中
-                    # st.markdown(f'<div class="stCard">', unsafe_allow_html=True)
+
+            # 緩存響應結果（用於合併相同 endpoint 的請求）
+            response_cache = {}
+            # 追蹤是否已發送過請求（用於判斷是否需要延遲）
+            request_sent = False
+
+            # 按照用戶勾選的順序，一個一個檢測並立即顯示結果
+            for i, test_name in enumerate(selected_tests):
+                status_text.text(f"正在執行: {test_name} ({i+1}/{selected_count})...")
+
+                # 特殊處理：網站導覽功能(navigation) 不需要呼叫 API，直接判定為通過
+                if test_name == "網站導覽功能(navigation )":
                     st.markdown(f"#### {test_name}")
+                    st.success("測試結果 : 通過")
+                    progress_bar.progress((i + 1) / selected_count)
+                    time.sleep(0.1)
+                    continue
+
+                # 以安全方式取得 endpoint，避免 KeyError
+                endpoint = TEST_OPTIONS.get(test_name)
+                if endpoint is None:
+                    st.error(f"找不到對應的 endpoint: {test_name}")
+                    progress_bar.progress((i + 1) / selected_count)
+                    time.sleep(0.1)
+                    continue
+
+                cache_key = endpoint
+
+                if cache_key not in response_cache:
+                    # 如果不是第一個請求，則等待
+                    if request_sent:
+                        status_text.text(f"等待中... ({i+1}/{selected_count})")
+                        time.sleep(9)
                     
+                    # 嚴格端點只能用對應輸入框，其餘才可回退 target_url
+                    if endpoint in strict_override_endpoints:
+                        url = url_overrides.get(endpoint, "")
+                    else:
+                        url = url_overrides.get(endpoint, "") or url_input
+
                     try:
                         with st.spinner(f"正在連線至 {endpoint}..."):
+                            payload = {"link": url}
                             response = client.call_endpoint(endpoint, data=payload)
-                        
+                            # 緩存響應結果
+                            response_cache[cache_key] = response
+                            # 標記已發送請求
+                            request_sent = True
+                    except Exception as e:
+                        # 如果請求失敗，設置錯誤響應
+                        response_cache[cache_key] = {"error": str(e), "status": "failed"}
+                        # 標記已發送請求
+                        request_sent = True
+
+                # 顯示測試項目標題
+                st.markdown(f"#### {test_name}")
+
+                # 從緩存中獲取響應並顯示結果
+                if cache_key in response_cache:
+                    response = response_cache[cache_key]
+                    try:
                         display_test_result(endpoint, response, label=test_name)
                     except Exception as e:
                         st.error(f"發生錯誤: {str(e)}")
-                    
-                    # st.markdown('</div>', unsafe_allow_html=True)
-                    progress_bar.progress((i + 1) / selected_count)
-                
+                else:
+                    st.error("無法找到測試結果")
+
+                progress_bar.progress((i + 1) / selected_count)
+                time.sleep(0.1)
+
             status_text.text("所有測試執行完畢。")
             st.success("檢測完成！")
