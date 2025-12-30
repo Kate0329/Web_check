@@ -48,71 +48,64 @@ def show():
         run_btn = st.button("開始檢測 (Start)", type="primary", use_container_width=True)
 
     # 意見信箱
-    if "意見信箱(haveMail )" in st.session_state["selected_tests"]:
-        st.markdown("### 意見信箱頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-        havemail_url_input = st.text_input(
-            "意見信箱URL", 
-            value=st.session_state["havemail_url"], 
-            label_visibility="collapsed", 
-            placeholder="可測試：haveMail意見信箱"
-        )
-        st.session_state["havemail_url"] = havemail_url_input
+    st.markdown("### 意見信箱頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+    havemail_url_input = st.text_input(
+        "意見信箱URL", 
+        value=st.session_state["havemail_url"], 
+        label_visibility="collapsed", 
+        placeholder="請輸入網址"
+    )
+    st.session_state["havemail_url"] = havemail_url_input
 
     # 網頁導覽
-    if "網站導覽功能(navigation )" in st.session_state["selected_tests"]:
-        st.markdown("### 網頁導覽頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-        navigation_url_input = st.text_input(
-            "網頁導覽URL",
-            value=st.session_state.get("navigation_url", ""),
-            label_visibility="collapsed",
-            placeholder="可測試：navigation頁首提供「網站導覽」"
-        )
-        st.session_state["navigation_url"] = navigation_url_input
+    st.markdown("### 網頁導覽頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+    classification_url_input = st.text_input(
+        "內容分類URL (haveClassification)",
+        value=st.session_state.get("classification_url", ""),
+        label_visibility="collapsed",
+        placeholder="請輸入網址"
+    )
+    st.session_state["classification_url"] = classification_url_input
 
     # 內容更新
-    isupdate_tests = ["內容更新(isUpdateShow )", "更新頻率(updateFreq )", "提供路徑導覽列(breadcrumb )", "內容分類(haveClassification )"]
-    if any(test in st.session_state["selected_tests"] for test in isupdate_tests):
-        st.markdown("### 最新消息頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-        isupdate_url_input = st.text_input(
-            "內容更新URL (isUpdateShow)",
-            value=st.session_state["isupdate_url"],
-            label_visibility="collapsed",
-            placeholder="可測試：isUpdateShow內容更新   updateFreq更新頻率   breadcrumb提供路徑導覽列   haveClassification內容分類"
-        )
-        st.session_state["isupdate_url"] = isupdate_url_input
+    st.markdown("### 最新消息頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+    isupdate_url_input = st.text_input(
+        "內容更新URL (isUpdateShow)",
+        value=st.session_state["isupdate_url"],
+        label_visibility="collapsed",
+        placeholder="請輸入網址"
+    )
+    st.session_state["isupdate_url"] = isupdate_url_input
 
     # 重大政策
-    if "重大政策(haveNews )" in st.session_state["selected_tests"]:
-        st.markdown("### 重大政策頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-        haveNews_url_input = st.text_input(
-            "重大政策URL (haveNews)",
-            value=st.session_state["haveNews_url"],
-            label_visibility="collapsed",
-            placeholder="可測試：haveNews重大政策"
-        )
-        st.session_state["haveNews_url"] = haveNews_url_input
+    st.markdown("### 重大政策頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+    haveNews_url_input = st.text_input(
+        "重大政策URL (haveNews)",
+        value=st.session_state["haveNews_url"],
+        label_visibility="collapsed",
+        placeholder="請輸入網址"
+    )
+    st.session_state["haveNews_url"] = haveNews_url_input
 
     # 公開資訊
-    if "公開資訊(havePublicData )" in st.session_state["selected_tests"]:
-        st.markdown("### 公開資訊頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-        publicdata_url_input = st.text_input(
-            "公開資訊URL (havePublicData)",
-            value=st.session_state["publicdata_url"],
-            label_visibility="collapsed",
-            placeholder="可測試：havePublicData公開資訊"
-        )
-        st.session_state["publicdata_url"] = publicdata_url_input
+    st.markdown("### 公開資訊頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+    publicdata_url_input = st.text_input(
+        "公開資訊URL (havePublicData)",
+        value=st.session_state["publicdata_url"],
+        label_visibility="collapsed",
+        placeholder="請輸入網址"
+    )
+    st.session_state["publicdata_url"] = publicdata_url_input
 
     # Sitemap.xml
-    if "提供Sitemap.xml文件(Sitemap )" in st.session_state["selected_tests"]:
-        st.markdown("### Sitemap.xml頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
-        sitemap_url_input = st.text_input(
-            "提供Sitemap.xml文件URL (Sitemap)",
-            value=st.session_state["sitemap_url"],
-            label_visibility="collapsed",
-            placeholder="可測試：sitemap是否為Sitemap.xml文件"
-        )
-        st.session_state["sitemap_url"] = sitemap_url_input
+    st.markdown("### Sitemap.xml頁連結 <span style='color:red'>*</span>", unsafe_allow_html=True)
+    sitemap_url_input = st.text_input(
+        "提供Sitemap.xml文件URL (Sitemap)",
+        value=st.session_state["sitemap_url"],
+        label_visibility="collapsed",
+        placeholder="請輸入網址"
+    )
+    st.session_state["sitemap_url"] = sitemap_url_input
 
 
     selected_count = len(st.session_state["selected_tests"])
@@ -250,7 +243,7 @@ def show():
                     # 如果不是第一個請求，則等待
                     if request_sent:
                         status_text.text(f"等待中... ({i+1}/{selected_count})")
-                        time.sleep(9)
+                        time.sleep(15)
                     
                     # 嚴格端點只能用對應輸入框，其餘才可回退 target_url
                     if endpoint in strict_override_endpoints:

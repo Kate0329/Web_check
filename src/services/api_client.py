@@ -82,19 +82,7 @@ class N8nApiClient:
     def check_accessibility(self, link: str) -> Dict[str, Any]:
         return self.call_endpoint("accessibility", {"link": link})
 
-    # 網站名稱或標誌
-    def check_Screenshot(self, link: str) -> Dict[str, Any]:
-        return self.call_endpoint("Screenshot", {"link": link})
-
-    # 網站無障礙標章
-    def check_Screenshot(self, link: str) -> Dict[str, Any]:
-        return self.call_endpoint("Screenshot", {"link": link})
-
-    # 網站資料開放宣告
-    def check_Screenshot(self, link: str) -> Dict[str, Any]:
-        return self.call_endpoint("Screenshot", {"link": link})
-
-    # 隱私權及資訊安全宣告
+    # Screenshot
     def check_Screenshot(self, link: str) -> Dict[str, Any]:
         return self.call_endpoint("Screenshot", {"link": link})
 
