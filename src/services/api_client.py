@@ -13,13 +13,13 @@ class N8nApiClient:
         處理實際請求邏輯的內部方法。
         """
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        
+        print(url)
         try:
             if method.upper() == "GET":
                 response = requests.get(url, params=data)
             else:
                 response = requests.post(url, json=data)
-            
+            print(response.json())
             response.raise_for_status()
             
             try:
@@ -68,7 +68,7 @@ class N8nApiClient:
     
     # 網站圖示檢測
     def check_favicon(self, link: str) -> Dict[str, Any]:
-        return self.call_endpoint("favicon", {"link": link})
+        return self.call_endpoint("favicon_ico", {"link": link})
 
     # 流量統計檢測
     def check_web_analysis(self, link: str) -> Dict[str, Any]:

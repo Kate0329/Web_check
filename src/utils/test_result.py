@@ -11,7 +11,7 @@ TEST_OPTIONS = {
     "語系編碼檢測 (lang)": "lang",
     "加密連結檢測 (https)": "https",
     "響應式設計檢測 (RWD)": "RWD",
-    "網站圖示檢測 (Favicon)": "favicon",
+    "網站圖示檢測 (Favicon)": "favicon_ico",
     "流量統計檢測 (WebAnalysis)": "WebAnalysis",
     "網頁動畫 (Animation)": "Animation",
     "無障礙檢測 (accessibility)": "accessibility",
@@ -588,7 +588,7 @@ def display_test_result(endpoint, response, label=None):
             return
         
     # 7. 網站圖示檢測 (Favicon)
-    if endpoint == "favicon":
+    if endpoint == "favicon_ico":
         is_parsed, passed, favicon_url = parse_favicon_response(response)
 
         if is_parsed:

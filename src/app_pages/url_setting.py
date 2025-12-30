@@ -37,7 +37,7 @@ def show():
     with col_input:
         st.markdown("#### 目標網址 <span style='color:red'>*</span>", unsafe_allow_html=True)
         url_input = st.text_input(
-            "",
+            "目標網址",
             value=st.session_state["target_url"], 
             label_visibility="collapsed", 
             placeholder="請輸入網址 (例如: https://www.google.com)"
